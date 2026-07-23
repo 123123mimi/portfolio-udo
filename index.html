@@ -17,30 +17,31 @@
     overflow-x: hidden;
   }
 
-  /* ─── 우도 배경 ─── */
+  /* ─── 배경: 한 장으로 스크롤 따라 이동 ─── */
   .bg-ocean {
     position: fixed;
-    inset: -20px;
+    left: -20px;
+    right: -20px;
     z-index: -2;
-    background:
-      linear-gradient(
-        180deg,
-        #1a8a7d 0%,
-        #2ec4b6 25%,
-        #40bfa3 50%,
-        #1b7a6e 75%,
-        #0f4c3a 100%
-      );
-    animation: sway 12s ease-in-out infinite;
+    background: url('ocean-surface.jpg') center top / 100% auto no-repeat;
+    /* 이미지 높이를 화면보다 훨씬 크게 잡아서 스크롤 여유 확보 */
+    height: 500vh;
+    top: -15vh;
+    will-change: transform;
   }
 
-  @keyframes sway {
-    0%   { transform: scale(1.04) translate(0, 0); }
-    20%  { transform: scale(1.08) translate(-12px, 8px); }
-    40%  { transform: scale(1.05) translate(10px, -6px); }
-    60%  { transform: scale(1.09) translate(-8px, -10px); }
-    80%  { transform: scale(1.06) translate(6px, 5px); }
-    100% { transform: scale(1.04) translate(0, 0); }
+  /* 바다 깊은 곳 색상 (이미지 아래 자연스럽게 이어짐) */
+  .bg-deep-color {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background: linear-gradient(
+      180deg,
+      #0a3d5c 0%,
+      #062a40 30%,
+      #041e30 60%,
+      #021520 100%
+    );
   }
 
   .light-sweep {
@@ -60,8 +61,8 @@
     height: 180%;
     background: radial-gradient(
       ellipse 40% 80% at center,
-      rgba(255,255,255,0.13) 0%,
-      rgba(255,255,255,0.05) 40%,
+      rgba(255,255,255,0.10) 0%,
+      rgba(255,255,255,0.04) 40%,
       transparent 70%
     );
     filter: blur(30px);
@@ -77,8 +78,8 @@
     height: 160%;
     background: radial-gradient(
       ellipse 35% 70% at center,
-      rgba(255,255,255,0.09) 0%,
-      rgba(255,255,255,0.03) 45%,
+      rgba(255,255,255,0.07) 0%,
+      rgba(255,255,255,0.02) 45%,
       transparent 70%
     );
     filter: blur(40px);
@@ -103,10 +104,10 @@
     z-index: -1;
     background: linear-gradient(
       180deg,
-      rgba(5, 40, 35, 0.35) 0%,
-      rgba(5, 40, 35, 0.2) 40%,
-      rgba(5, 40, 35, 0.4) 70%,
-      rgba(3, 25, 20, 0.7) 100%
+      rgba(5, 40, 35, 0.15) 0%,
+      rgba(5, 40, 35, 0.1) 40%,
+      rgba(0, 20, 30, 0.35) 70%,
+      rgba(0, 10, 20, 0.6) 100%
     );
   }
 
@@ -231,7 +232,7 @@
   /* ─── 섹션 공통 ─── */
   .section {
     padding: 72px 28px;
-    background: rgba(5, 40, 35, 0.35);
+    background: rgba(0, 20, 40, 0.35);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-radius: 12px;
@@ -417,7 +418,7 @@
   .closing {
     text-align: center;
     padding: 80px 28px 140px;
-    background: rgba(5, 40, 35, 0.35);
+    background: rgba(0, 20, 40, 0.35);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border-radius: 12px;
@@ -482,7 +483,9 @@
 </head>
 <body>
 
-<div class="bg-ocean"></div>
+<!-- 배경: 깊은 바다 색 → 그 위에 사진 한 장이 스크롤 따라 올라감 -->
+<div class="bg-deep-color"></div>
+<div class="bg-ocean" id="bgOcean"></div>
 <div class="light-sweep"></div>
 <div class="bg-overlay"></div>
 
@@ -592,9 +595,13 @@
     <p class="closing-message">감사합니다.</p>
   </section>
 
+  <!-- 깊은 바다 여백 -->
+  <div style="height: 60vh;"></div>
+
 </div>
 
 <script>
+// 스크롤 등장 애니메이션
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -602,6 +609,17 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// 스크롤에 따라 배경 이미지가 위로 올라감 (바다 속으로 잠기는 효과)
+const bgOcean = document.getElementById('bgOcean');
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  // 스크롤 비율에 따라 배경을 위로 이동 (이미지가 아래쪽 = 바닷속을 보여줌)
+  const moveY = (scrollY / maxScroll) * 60; // 최대 60% 이동
+  bgOcean.style.transform = `translateY(-${moveY}%)`;
+});
 </script>
 
 </body>
