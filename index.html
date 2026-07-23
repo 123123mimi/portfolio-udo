@@ -23,30 +23,11 @@
     left: -20px;
     right: -20px;
     z-index: -2;
-    background: url('ocean-surface.jpg') center top / 100% auto no-repeat;
-    background-color: #062a40;
+    background: url('ocean-surface.jpg') center top / cover no-repeat;
     /* 이미지 높이를 화면보다 훨씬 크게 잡아서 스크롤 여유 확보 */
     height: 500vh;
     top: -15vh;
     will-change: transform;
-  }
-
-  /* 이미지 하단을 자연스럽게 페이드아웃 */
-  .bg-ocean::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 70%;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      #062a40 40%,
-      #041e30 70%,
-      #021520 100%
-    );
-    pointer-events: none;
   }
 
   /* 바다 깊은 곳 색상 (이미지 아래 자연스럽게 이어짐) */
