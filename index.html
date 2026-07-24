@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>우도로 갑니다</title>
+<title>우도 가고 싶다</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
@@ -20,28 +20,19 @@
   /* ─── 배경: 한 장으로 스크롤 따라 이동 ─── */
   .bg-ocean {
     position: fixed;
-    left: -20px;
-    right: -20px;
+    inset: -20px;
     z-index: -2;
-    background: url('ocean-surface.jpg') center top / cover no-repeat;
-    /* 이미지 높이를 화면보다 훨씬 크게 잡아서 스크롤 여유 확보 */
-    height: 500vh;
-    top: -15vh;
-    will-change: transform;
+    background: url('ocean-bg.jpg') center / cover no-repeat;
+    animation: sway 12s ease-in-out infinite;
   }
 
-  /* 바다 깊은 곳 색상 (이미지 아래 자연스럽게 이어짐) */
-  .bg-deep-color {
-    position: fixed;
-    inset: 0;
-    z-index: -3;
-    background: linear-gradient(
-      180deg,
-      #0a3d5c 0%,
-      #062a40 30%,
-      #041e30 60%,
-      #021520 100%
-    );
+  @keyframes sway {
+    0%   { transform: scale(1.04) translate(0, 0); }
+    20%  { transform: scale(1.08) translate(-12px, 8px); }
+    40%  { transform: scale(1.05) translate(10px, -6px); }
+    60%  { transform: scale(1.09) translate(-8px, -10px); }
+    80%  { transform: scale(1.06) translate(6px, 5px); }
+    100% { transform: scale(1.04) translate(0, 0); }
   }
 
   .light-sweep {
@@ -121,13 +112,13 @@
 
   /* ─── 히어로 ─── */
   .hero {
-    min-height: 100vh;
+    min-height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 60px 28px;
+    padding: 40px 28px 80px;
     position: relative;
   }
 
@@ -159,7 +150,6 @@
     margin-bottom: 40px;
   }
 
-  /* 프로필 정보 테이블 */
   .profile-table {
     width: 100%;
     max-width: 320px;
@@ -200,7 +190,6 @@
     border-bottom: none;
   }
 
-  /* 스크롤 유도 */
   .scroll-hint {
     position: absolute;
     bottom: 40px;
@@ -268,7 +257,7 @@
   .greeting-text {
     font-size: 15px;
     font-weight: 300;
-    line-height: 1.75;
+    line-height: 1.85;
     color: rgba(255,255,255,0.9);
     word-break: keep-all;
   }
@@ -279,36 +268,39 @@
     font-weight: 500;
   }
 
-  /* ─── 어필 포인트 ─── */
-  .strength-list {
+  .greeting-text .greeting-block {
+    margin-bottom: 28px;
+  }
+
+  .greeting-text .greeting-block:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ─── 할 수 있는 것들 ─── */
+  .skill-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
   }
 
-  .strength-item {
-    padding: 24px;
-    border-left: 2px solid rgba(255,255,255,0.12);
-    transition: border-color 0.3s;
+  .skill-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.9);
   }
 
-  .strength-item:hover {
-    border-color: rgba(255,255,255,0.35);
+  .skill-item > span:last-child {
+    transform: translateY(2px);
   }
 
-  .strength-item h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #fff;
-  }
-
-  .strength-item p {
-    font-size: 13px;
-    font-weight: 300;
-    line-height: 1.65;
-    color: rgba(255,255,255,0.75);
+  .skill-icon {
+    font-size: 20px;
+    flex-shrink: 0;
   }
 
   /* ─── 블로그 하이라이트 ─── */
@@ -452,7 +444,6 @@
     transform: translateY(0);
   }
 
-  /* ─── placeholder ─── */
   .placeholder {
     border: 1px dashed rgba(255,255,255,0.15);
     border-radius: 8px;
@@ -472,9 +463,7 @@
     .closing { padding: 60px 20px 100px; margin: 8px 12px; }
     .hero { padding: 48px 20px; }
     .greeting-text { font-size: 14px; }
-    .strength-item { padding: 18px; }
-    .strength-item h3 { font-size: 14px; }
-    .strength-item p { font-size: 12.5px; }
+    .skill-item { font-size: 13px; }
     .profile-table { max-width: 280px; }
     .profile-table td { font-size: 12.5px; }
     .blog-card-img { height: 160px; }
@@ -483,61 +472,58 @@
 </head>
 <body>
 
-<!-- 배경: 깊은 바다 색 → 그 위에 사진 한 장이 스크롤 따라 올라감 -->
-<div class="bg-deep-color"></div>
-<div class="bg-ocean" id="bgOcean"></div>
+<!-- 배경 -->
+<div class="bg-ocean"></div>
 <div class="light-sweep"></div>
 <div class="bg-overlay"></div>
 
 <div class="content">
 
-  <!-- ═══ 히어로 ═══ -->
-  <section class="hero">
+  <!-- ═══ 프로필 ═══ -->
+  <section class="reveal" style="text-align: center; padding: 60px 28px;">
     <img class="profile-photo" src="profile.jpg" alt="프로필 사진">
 
-    <h1 class="name">김은미</h1>
-    <p class="subtitle">서울에선 백수, 제주 가면 만능 일꾼</p>
-
-    <table class="profile-table">
+    <table class="profile-table" style="margin: 0 auto;">
       <tr><td>이름</td><td>김은미</td></tr>
-      <tr><td>나이</td><td>88년생</td></tr>
       <tr><td>연락처</td><td><a href="tel:01083815222">010-8381-5222</a></td></tr>
-      <tr><td>블로그</td><td><a href="https://blog.naver.com/chzhqldi" target="_blank">blog.naver.com/chzhqldi</a></td></tr>
-      <tr><td>인스타</td><td><a href="https://instagram.com/annyeong.hada" target="_blank">@annyeong.hada</a></td></tr>
     </table>
-
-    <div class="scroll-hint">
-      <span>SCROLL</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- ═══ 자기소개 ═══ -->
-  <section class="section reveal">
-    <span class="section-label">About Me</span>
-    <h2 class="section-title">안녕하세요.</h2>
-    <div class="placeholder">자기소개 내용이 들어갈 자리입니다</div>
   </section>
 
   <div class="thin-line reveal"></div>
 
-  <!-- ═══ 어필 포인트 ═══ -->
-  <section class="section reveal">
-    <span class="section-label">Strengths</span>
-    <h2 class="section-title">이런 걸 할 수 있어요</h2>
+  <!-- ═══ 자기소개 ═══ -->
+  <section class="reveal" style="padding: 48px 28px;">
+    <span class="section-label">About Me</span>
+    <h2 class="section-title">안녕하세요.</h2>
+    <div class="greeting-text">
+      <p class="greeting-block">작년 다마스를 타고 우도를 여행하며 <em>머뭄</em>에서 머물렀을 때의 편안하고 따뜻한 공간이 기억에 오래 남았습니다.</p>
+      <p class="greeting-block">좋은 공간에서 좋은 분들과 함께 지내보고 싶다는 생각이 들어 먼저 문을 두드립니다.</p>
+    </div>
+  </section>
 
-    <ul class="strength-list">
-      <li class="strength-item reveal">
-        <h3>어필 포인트 1</h3>
-        <p>내용이 들어갈 자리입니다</p>
+  <div class="thin-line reveal"></div>
+
+  <!-- ═══ 할 수 있는 것들 ═══ -->
+  <section class="reveal" style="padding: 48px 28px;">
+    <span class="section-label">What I Can Do</span>
+    <h2 class="section-title">이런 것들을 할 수 있습니다</h2>
+
+    <ul class="skill-list">
+      <li class="skill-item reveal">
+        <span class="skill-icon">🚐</span>
+        <span>픽업 업무 가능합니다</span>
       </li>
-      <li class="strength-item reveal">
-        <h3>어필 포인트 2</h3>
-        <p>내용이 들어갈 자리입니다</p>
+      <li class="skill-item reveal">
+        <span class="skill-icon">🍳</span>
+        <span>아침 계란후라이 자신 있습니다</span>
       </li>
-      <li class="strength-item reveal">
-        <h3>어필 포인트 3</h3>
-        <p>내용이 들어갈 자리입니다</p>
+      <li class="skill-item reveal">
+        <span class="skill-icon">🧹</span>
+        <span>청소와 정리정돈 꼼꼼하게 합니다</span>
+      </li>
+      <li class="skill-item reveal">
+        <span class="skill-icon">🐶</span>
+        <span>❤️❤️❤️❤️❤️</span>
       </li>
     </ul>
   </section>
@@ -545,63 +531,25 @@
   <div class="thin-line reveal"></div>
 
   <!-- ═══ 블로그 하이라이트 ═══ -->
-  <section class="section reveal">
+  <section class="reveal" style="padding: 48px 28px;">
     <span class="section-label">Blog</span>
-    <h2 class="section-title">이 글, 꼭 봐주세요</h2>
+    <h2 class="section-title"><a href="https://blog.naver.com/chzhqldi/224015561517" target="_blank" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.2); transition: border-color 0.3s;">우도 여행 이야기 (블로그 이동)</a></h2>
 
-    <a class="blog-card" href="#" target="_blank">
-      <div class="blog-card-img">블로그 글 이미지가 들어갈 자리</div>
+    <a class="blog-card" href="https://blog.naver.com/chzhqldi/224015561517" target="_blank">
+      <div class="blog-card-img" style="background: url('https://postfiles.pstatic.net/MjAyNTA5MjBfMTY2/MDAxNzU4MzY3NDA5MjEx.CI0TbIU4aiHDVXMKbsYEMb7MEuUdP81HRJCAdiqR9Dwg.9wYGv4j-cZemIeQ2ies8LfdFxp3z7LM8hGFOf4KO5-gg.JPEG/20250908_150318.jpg?type=w773') center/cover no-repeat;"></div>
       <div class="blog-card-body">
-        <h3 class="blog-card-title">블로그 글 제목</h3>
-        <p class="blog-card-desc">블로그 글 요약이 들어갈 자리입니다</p>
-        <span class="blog-card-link">READ MORE →</span>
+        <h3 class="blog-card-title">우도 머뭄게스트하우스</h3>
+        <p class="blog-card-desc">깔끔하고 따뜻한 공간에서 1박, 다마스를 타고 떠난 우도 여행기</p>
+        <span class="blog-card-link">블로그 이동 →</span>
       </div>
     </a>
   </section>
 
-  <div class="thin-line reveal"></div>
-
-  <!-- ═══ 다른 페이지 링크 ═══ -->
-  <section class="section reveal">
-    <span class="section-label">More</span>
-    <h2 class="section-title">더 보기</h2>
-
-    <div class="page-links">
-      <a class="page-link-card" href="https://123123mimi.github.io/portfolio-jeju/">
-        <span class="page-link-icon">🌊</span>
-        <div class="page-link-info">
-          <h3>제주 바다로 갑니다</h3>
-          <p>제주 바다 포트폴리오</p>
-        </div>
-        <span class="page-link-arrow">→</span>
-      </a>
-      <a class="page-link-card placeholder" href="#">
-        <span class="page-link-icon">+</span>
-        <div class="page-link-info">
-          <h3>새 페이지 추가 예정</h3>
-          <p>링크가 추가될 자리입니다</p>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <div class="thin-line reveal"></div>
-
-  <!-- ═══ 마무리 ═══ -->
-  <section class="closing reveal">
-    <p class="closing-quote">
-      우도의 에메랄드 바다처럼<br>맑은 하루 되세요.
-    </p>
-    <p class="closing-message">감사합니다.</p>
-  </section>
-
-  <!-- 깊은 바다 여백 -->
-  <div style="height: 60vh;"></div>
+  <div style="height: 10vh;"></div>
 
 </div>
 
 <script>
-// 스크롤 등장 애니메이션
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) e.target.classList.add('visible');
@@ -610,16 +558,6 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// 스크롤에 따라 배경 이미지가 위로 올라감 (바다 속으로 잠기는 효과)
-const bgOcean = document.getElementById('bgOcean');
-
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const maxScroll = document.body.scrollHeight - window.innerHeight;
-  // 스크롤 비율에 따라 배경을 위로 이동 (이미지가 아래쪽 = 바닷속을 보여줌)
-  const moveY = (scrollY / maxScroll) * 60; // 최대 60% 이동
-  bgOcean.style.transform = `translateY(-${moveY}%)`;
-});
 </script>
 
 </body>
